@@ -32,6 +32,7 @@ return (floor(mass / 3) - 2).toInt()
 fun main() {
     var totalFuelRequiredForModules = 0
     var totalFuelRequiredForModulesAndFuel = 0
+    //TODO refactor to use readLines + map?
     File("src/day1/input").forEachLine {
         val calculatedModuleFuel = calculateFuelRequiredForModule(it.toInt())
         val calculatedFuelForFuel = calculateFuelRequiredForFuel(calculatedModuleFuel)
