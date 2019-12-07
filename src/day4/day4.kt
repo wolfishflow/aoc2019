@@ -10,7 +10,13 @@ fun main() {
     println("Test Case 2: Should return false:${isValidPassword(TEST_2_INPUT.toInt(), false)}")
     println("Test Case 3: Should return false:${isValidPassword(TEST_3_INPUT.toInt(), false)}")
     println("Part 1: The answer is ${processInput(INPUT, false)}")//1675
-//    An Elf just remembered one more important detail: the two adjacent matching digits are not part of a larger group of matching digits.
+
+////    An Elf just remembered one more important detail: the two adjacent matching digits are not part of a larger group of matching digits.
+    println("Test Case 4: Should return false: ${isValidPassword(177789, true)}")
+    println("Test Case 5: Should return true: ${isValidPassword(177899, true)}")
+    println("Test Case 6: Should return true: ${isValidPassword(177889, true)}")
+    println("Test Case 7: Should return true: ${isValidPassword(177788, true)}")
+    println("Test Case 7: Should return false: ${isValidPassword(555999, true)}")
     println("Part 2: The answer is ${processInput(INPUT, true)}")
 
 }
@@ -49,16 +55,33 @@ fun isValidPassword(password: Int, onlyAllowDoubleAdjacentDuplicates: Boolean): 
     val passwordIntList = password.toString().map { it.toString().toInt() }
     //The lowest previous digit can be 0, so it needs to be -1 to start with?
     var previousDigit = -1
+    // Track all adjacent duplicates in set
+    val numberOfAdjacentDuplicateSet = mutableSetOf<Int>()
+    var numberOfAdjacentDuplicates = 1
     for (index in passwordIntList.indices) {
         when {
             //Read Right to Left -> track decrease and short circuit
             passwordIntList[index] < previousDigit -> return false
             //Adjacent Duplicate
-            passwordIntList[index] == previousDigit -> containsAdjacentDuplicate = true
+            passwordIntList[index] == previousDigit -> {
+                containsAdjacentDuplicate = true
+                if (onlyAllowDoubleAdjacentDuplicates) {
+                    numberOfAdjacentDuplicates++
+                }
+            }
             else -> {
-            } //do nothing?
+                numberOfAdjacentDuplicateSet.add(numberOfAdjacentDuplicates)
+                numberOfAdjacentDuplicates = 1
+            }
         }
         previousDigit = passwordIntList[index]
     }
+    //scenario where the duplicate is the last digit ex. 177788
+    numberOfAdjacentDuplicateSet.add(numberOfAdjacentDuplicates)
+
+    if (onlyAllowDoubleAdjacentDuplicates) {
+        return containsAdjacentDuplicate && numberOfAdjacentDuplicateSet.any { value -> value == 2 }
+    }
+
     return containsAdjacentDuplicate
 }
