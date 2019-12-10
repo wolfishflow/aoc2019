@@ -3,6 +3,10 @@ package day6
 import java.io.File
 
 const val testInput = "COM)B\n" + "B)C\n" + "C)D\n" + "D)E\n" + "E)F\n" + "B)G\n" + "G)H\n" + "D)I\n" + "E)J\n" + "J)K\n" + "K)L"
+const val test2Input = "COM)B\n" + "B)C\n" + "C)D\n" + "D)E\n" + "E)F\n" + "B)G\n" + "G)H\n" + "D)I\n" + "E)J\n" + "J)K\n" + "K)L\n" + "K)YOU\n" + "I)SAN"
+
+const val SANTA= "SAN"
+const val YOU= "YOU"
 
 fun main() {
     //Tests
@@ -31,21 +35,20 @@ fun verifyTest(testInput: String, numberOfOrbits: Int): Boolean {
 
 fun calculateNumberOfOrbits(orbitMap: Map<String, String>): Int {
     var numberOfOrbits = 0
-    var dive = true
+    var containsMoreIndirectOrbits = true
     var child: String
     orbitMap.map {
         child = it.value
-        while (dive) {
+        while (containsMoreIndirectOrbits) {
             if (orbitMap.containsKey(child)) {
                 numberOfOrbits++
                 child = orbitMap[child].toString()
             } else {
-                dive = false
+                containsMoreIndirectOrbits = false
             }
         }
-        dive = true
+        containsMoreIndirectOrbits = true
     }
-    println("calculateNumberOfOrbits: $numberOfOrbits")
     //numberOfOrbits == to the amount of all indirect orbit chains, orbitMap.size is all direct orbit chains
     return numberOfOrbits + orbitMap.size
 }
